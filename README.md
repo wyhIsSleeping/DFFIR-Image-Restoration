@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # DFFIR: [Your Paper Title]
 
 [![Python](https://img.shields.io/badge/Python-3.11.5-blue.svg)](https://www.python.org/)
@@ -133,3 +134,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For any questions, please contact: [wuyanhongswpu@163.com]
 
+=======
+# DFFIR-Image-Restoration
+All-in-One Image Restoration with Text-Guided Hierarchical Fusion and Multi-Scale Frequency Enhancement
+>>>>>>> 0a4648bbe5df6eb6902cde487b19456724c94aa3
