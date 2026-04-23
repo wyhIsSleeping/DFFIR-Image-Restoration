@@ -1,11 +1,10 @@
-<<<<<<< HEAD
-# DFFIR: [Your Paper Title]
+# DFFIR: [All-in-One Image Restoration with Text-Guided Hierarchical Fusion and Multi-Scale Frequency Enhancement]
 
 [![Python](https://img.shields.io/badge/Python-3.11.5-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1.1-red.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> Official PyTorch implementation of [Your Paper Title] (Accepted by [Conference/Journal Name])
+> Official PyTorch implementation of "DFFIR: All-in-One Image Restoration with Text-Guided Hierarchical Fusion and Multi-Scale Frequency Enhancement" (Submitted to Neurocomputing)
 
 ## 📋 Overview
 
@@ -37,7 +36,7 @@ This repository contains the official implementation of our paper "[Your Paper T
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/DFFIR.git
+git clone https://github.com/wyhIsSleeping/DFFIR-Image-Restoration.git
 cd DFFIR
 ```
 
@@ -48,13 +47,7 @@ conda create -n dffir python=3.11.5
 conda activate dffir
 ```
 
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Download CLIP model
+### 3. Download CLIP model
 
 The code will automatically download the ViT-B/32 CLIP model when first run.
 
