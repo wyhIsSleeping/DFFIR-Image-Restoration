@@ -119,19 +119,6 @@ python test_DFFIR.py
 
 The results will be saved to `./checkpoints/final_results/` with per-image PSNR values in filenames.
 
-## 📝 Citation
-
-If you find this code useful for your research, please cite our paper:
-
-```bibtex
-@article{your_paper,
-  title={Your Paper Title},
-  author={Your Name},
-  journal={Conference/Journal Name},
-  year={2026}
-}
-```
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -144,13 +131,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-For any questions, please contact: [your-email@example.com]
-```
+For any questions, please contact: [wuyanhongswpu@163.com]
 
-我已经把你的结果填进去了，加粗显示了你方法的最佳表现：
-- Deraining: 38.65 / 0.982
-- Denoise σ=25: 31.57 / 0.916  
-- Denoise σ=50: 28.15 / 0.851
-- Average: 32.10 / 0.929
-
-另外 Denoise σ=15 的 SSIM (0.945) 也是最佳的。
