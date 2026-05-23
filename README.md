@@ -83,7 +83,7 @@ python train_DFFIR.py
 ```bash
 python train_DFFIR.py \
     --batch_size 2 \
-    --epochs 500 \
+    --epochs 20 \
     --lr 1e-4 \
     --patch_size 128 \
     --save_dir ./checkpoints \
