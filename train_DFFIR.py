@@ -37,7 +37,7 @@ parser.add_argument('--gpu', type=str, default="0",
 parser.add_argument('--cuda', type=int, default=0)
 parser.add_argument('--pretrained_1', type=str, default='', 
         help='training loss')
-parser.add_argument('--epochs', type=int, default=500, help='maximum number of epochs to train the total model.')
+parser.add_argument('--epochs', type=int, default=30, help='maximum number of epochs to train the total model.')
 parser.add_argument('--batch_size', type=int,default=1,help="Batch size to use per GPU")
 parser.add_argument('--lr', type=float, default=1e-4, help='learning rate of encoder.')
 

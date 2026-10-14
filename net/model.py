@@ -233,61 +233,83 @@ class EfficientLargeKernel(nn.Module):
     def forward(self, x):
         return self.dw_13(x) + self.dw_31(x) + self.dw_33(x)
 
+
 class FDN(nn.Module):
     def __init__(self, dim):
         super().__init__()
         self.dim = dim
-        
+
         self.low_freq_branch = nn.Sequential(
-            nn.Conv2d(dim, dim*2, 1),
+            nn.Conv2d(dim, dim * 2, 1),
             nn.GELU(),
-            nn.Conv2d(dim*2, dim, 1),
+            nn.Conv2d(dim * 2, dim, 1),
         )
 
         self.high_freq_branch = nn.Sequential(
-            nn.Conv2d(dim, dim*2, 1),
+            nn.Conv2d(dim, dim * 2, 1),
             nn.GELU(),
-            nn.Conv2d(dim*2, dim, 1),
+            nn.Conv2d(dim * 2, dim, 1),
         )
 
         self.enhancement = nn.Sequential(
-            nn.Conv2d(dim*2, dim, 3, padding=1),
+            nn.Conv2d(dim * 2, dim, 3, padding=1),
             nn.GELU(),
             nn.Conv2d(dim, dim, 1)
         )
-        
+
         self.gate = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
-            nn.Conv2d(dim, dim//4, 1),
+            nn.Conv2d(dim, dim // 4, 1),
             nn.GELU(),
-            nn.Conv2d(dim//4, dim, 1),
+            nn.Conv2d(dim // 4, dim, 1),
             nn.Sigmoid()
         )
-        
+
     def forward(self, x):
         B, C, H, W = x.shape
-        
+
         x_fft = torch.fft.fft2(x, norm='backward')
 
-        center_h, center_w = H//3, W//3
-        low_freq = torch.fft.fftshift(x_fft, dim=(-2, -1))
-        low_freq_center = low_freq[..., center_h:2*center_h, center_w:2*center_w]
-        low_freq_resized = F.interpolate(low_freq_center.real, size=(H, W), 
-                                       mode='bicubic', align_corners=False)
+        center_h, center_w = H // 3, W // 3
+
+
+        # 1. fftshift: 低频从四角移到中心
+        low_freq_shifted = torch.fft.fftshift(x_fft, dim=(-2, -1))
+
+        # 2. 裁剪中心 1/3 区域（低频）
+        low_freq_center = low_freq_shifted[..., center_h:2 * center_h, center_w:2 * center_w]
+
+        # 3. ifftshift: 把低频从中心移回四角（ifft2 要求输入低频在四角）
+        low_freq_center_restored = torch.fft.ifftshift(low_freq_center, dim=(-2, -1))
+
+        # 4. 逆 FFT 回空间域，取实部
+        low_freq_spatial = torch.fft.ifft2(low_freq_center_restored, norm='backward').real
+
+        # 5. 插值放大回原尺寸（在空间域做插值，不是在频域）
+        low_freq_resized = F.interpolate(low_freq_spatial, size=(H, W), mode='bilinear', align_corners=False)
+
+        # 6. 过卷积提取特征
         low_feat = self.low_freq_branch(low_freq_resized)
 
-        high_freq = x_fft.clone()
+        # 1. fftshift: 低频从四角移到中心（与低频分支对齐）
+        high_freq_shifted = torch.fft.fftshift(x_fft, dim=(-2, -1))
 
-        mask = torch.ones_like(x_fft)
-        mask[..., center_h:2*center_h, center_w:2*center_w] = 0.3
-        high_freq = high_freq * mask
-        high_freq_real = torch.fft.ifft2(high_freq, norm='backward').real
-        high_feat = self.high_freq_branch(high_freq_real)
-        
- 
+        # 2. 低频区域乘以 0.3（衰减低频，保留高频）
+        mask = torch.ones_like(high_freq_shifted)
+        mask[..., center_h:2 * center_h, center_w:2 * center_w] = 0.3
+        high_freq_shifted = high_freq_shifted * mask
+
+        # 3. ifftshift: 把低频从中心移回四角（ifft2 要求输入低频在四角）
+        high_freq_restored = torch.fft.ifftshift(high_freq_shifted, dim=(-2, -1))
+
+        # 4. 逆 FFT 回空间域，取实部
+        high_freq_spatial = torch.fft.ifft2(high_freq_restored, norm='backward').real
+
+        high_feat = self.high_freq_branch(high_freq_spatial)
+
+
         fused = self.enhancement(torch.cat([low_feat, high_feat], dim=1))
-        
-     
+
         gate_weight = self.gate(fused)
         return fused * gate_weight
         
@@ -514,7 +536,7 @@ class DFFIR(nn.Module):
         # decoder = False,
         dual_pixel_task = False        ## True for dual-pixel defocus deblurring only. Also set inp_channels=6
     ):
-        super(ChannelShuffle_skip_textguaid, self).__init__()    
+        super(DFFIR, self).__init__()
         self.device = device        
 
         self.patch_embed = OverlapPatchEmbed(inp_channels, dim)

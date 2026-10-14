@@ -17,7 +17,7 @@ This repository contains the official implementation of our paper "[Your Paper T
 | Task           | Dataset  | PSNR (dB) | SSIM      |
 | -------------- | -------- | --------- | --------- |
 | Dehazing       | SOTS     | 29.50     | 0.955     |
-| Deraining      | Rain100L | **38.65** | **0.982** |
+| Deraining      | Rain100L | **37.28** | **0.977** |
 | Denoise (σ=15) | CBSD68   | 33.98     | **0.945** |
 | Denoise (σ=25) | CBSD68   | **31.57** | **0.916** |
 | Denoise (σ=50) | CBSD68   | **28.15** | **0.851** |
@@ -82,8 +82,8 @@ python train_DFFIR.py
 
 ```bash
 python train_DFFIR.py \
-    --batch_size 2 \
-    --epochs 20 \
+    --batch_size 1 \
+    --epochs 30 \
     --lr 1e-4 \
     --patch_size 128 \
     --save_dir ./checkpoints \
@@ -95,7 +95,7 @@ python train_DFFIR.py \
 | Argument        | Default       | Description                    |
 | --------------- | ------------- | ------------------------------ |
 | `--batch_size`  | 1             | Batch size per GPU             |
-| `--epochs`      | 500           | Number of training epochs      |
+| `--epochs`      | 30            | Number of training epochs      |
 | `--lr`          | 1e-4          | Learning rate                  |
 | `--patch_size`  | 128           | Size of image patches          |
 | `--save_dir`    | ./checkpoints | Directory to save checkpoints  |
